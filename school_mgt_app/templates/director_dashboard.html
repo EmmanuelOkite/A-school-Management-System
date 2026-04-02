@@ -1,0 +1,720 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Director Dashboard | School Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f3f4f6;
+        color: #111827;
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+        position: fixed;
+        left: 0; top: 0;
+        width: 240px;
+        height: 100vh;
+        background: #111827;
+        display: flex;
+        flex-direction: column;
+        z-index: 100;
+        overflow-y: auto;
+    }
+
+    .sidebar-header {
+        padding: 20px 20px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-header .school-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .sidebar-header .school-logo .icon {
+        width: 36px; height: 36px;
+        background: #3b82f6;
+        border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 16px;
+    }
+
+    .sidebar-header .school-name {
+        font-size: 14px; font-weight: 600; color: #fff;
+        line-height: 1.2;
+    }
+
+    .sidebar-header .school-sub {
+        font-size: 11px; color: #9ca3af;
+    }
+
+    .sidebar-header .user-badge {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 10px;
+    }
+
+    .sidebar-header .user-badge .avatar {
+        width: 34px; height: 34px;
+        border-radius: 50%;
+        background: #3b82f6;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 600; font-size: 13px; color: #fff;
+        flex-shrink: 0;
+    }
+
+    .sidebar-header .user-badge .info .name {
+        font-size: 13px; font-weight: 600; color: #fff;
+    }
+
+    .sidebar-header .user-badge .info .role {
+        font-size: 11px; color: #9ca3af;
+    }
+
+    .sidebar nav { flex: 1; padding: 12px 0; }
+
+    .sidebar nav ul { list-style: none; }
+
+    .nav-section-label {
+        font-size: 10px;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 10px 20px 4px;
+    }
+
+    .sidebar nav ul li a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        text-decoration: none;
+        color: #9ca3af;
+        font-size: 13.5px;
+        border-radius: 0;
+        transition: background 0.15s, color 0.15s;
+        border-left: 3px solid transparent;
+    }
+
+    .sidebar nav ul li a:hover {
+        background: rgba(255,255,255,0.06);
+        color: #fff;
+    }
+
+    .sidebar nav ul li a.active {
+        background: rgba(59,130,246,0.15);
+        color: #60a5fa;
+        border-left-color: #3b82f6;
+    }
+
+    .sidebar nav ul li a i {
+        width: 18px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .sidebar-footer {
+        padding: 12px 20px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-footer a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #9ca3af;
+        text-decoration: none;
+        font-size: 13.5px;
+        padding: 8px 0;
+        transition: color 0.15s;
+    }
+
+    .sidebar-footer a:hover { color: #f87171; }
+
+    /* ── Main ── */
+    .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ── Top bar ── */
+    .topbar {
+        position: sticky; top: 0; z-index: 50;
+        background: #fff;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 0 28px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .topbar .search-wrap {
+        position: relative;
+        flex: 1; max-width: 380px;
+    }
+
+    .topbar .search-wrap i {
+        position: absolute; left: 12px; top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af; font-size: 14px;
+    }
+
+    .topbar .search-wrap input {
+        width: 100%;
+        padding: 8px 12px 8px 36px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: 'Poppins', sans-serif;
+        background: #f9fafb;
+        color: #111827;
+        outline: none;
+        transition: border-color 0.15s;
+    }
+
+    .topbar .search-wrap input:focus { border-color: #3b82f6; background: #fff; }
+
+    .topbar-right {
+        display: flex; align-items: center; gap: 16px;
+    }
+
+    .notif-btn {
+        position: relative;
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; font-size: 15px; color: #6b7280;
+        transition: background 0.15s;
+    }
+
+    .notif-btn:hover { background: #f3f4f6; }
+
+    .notif-btn .badge {
+        position: absolute; top: -2px; right: -2px;
+        width: 16px; height: 16px;
+        background: #ef4444;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 9px; font-weight: 600; color: #fff;
+    }
+
+    .topbar-user {
+        display: flex; align-items: center; gap: 10px;
+        cursor: pointer;
+    }
+
+    .topbar-user .avatar {
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        background: #3b82f6;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 600; font-size: 13px; color: #fff;
+    }
+
+    .topbar-user .info .name {
+        font-size: 13px; font-weight: 600; color: #111827; line-height: 1.2;
+    }
+
+    .topbar-user .info .role {
+        font-size: 11px; color: #6b7280;
+    }
+
+    /* ── Page body ── */
+    .page-body { padding: 28px; flex: 1; }
+
+    .page-title { font-size: 22px; font-weight: 700; color: #111827; }
+    .page-subtitle { font-size: 13px; color: #6b7280; margin-top: 2px; margin-bottom: 24px; }
+
+    /* ── Stat Cards ── */
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 20px;
+        border: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .stat-card .left .label {
+        font-size: 12.5px; color: #6b7280; margin-bottom: 6px;
+    }
+
+    .stat-card .left .value {
+        font-size: 26px; font-weight: 700; color: #111827; line-height: 1;
+    }
+
+    .stat-card .left .sub {
+        font-size: 11.5px; margin-top: 6px;
+        color: #10b981;
+    }
+
+    .stat-card .left .sub.neutral { color: #6b7280; }
+    .stat-card .left .sub.warn { color: #f59e0b; }
+
+    .stat-card .icon-wrap {
+        width: 44px; height: 44px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px; flex-shrink: 0;
+    }
+
+    .icon-blue   { background: #dbeafe; color: #3b82f6; }
+    .icon-green  { background: #d1fae5; color: #10b981; }
+    .icon-indigo { background: #e0e7ff; color: #6366f1; }
+    .icon-orange { background: #ffedd5; color: #f97316; }
+
+    /* ── Charts row ── */
+    .charts-row {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .chart-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 20px;
+        border: 1px solid #f0f0f0;
+    }
+
+    .chart-card .card-title {
+        font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 16px;
+    }
+
+    .chart-wrap { position: relative; }
+
+    /* ── Bottom row ── */
+    .bottom-row {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 16px;
+    }
+
+    /* ── Table ── */
+    .table-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 20px;
+        border: 1px solid #f0f0f0;
+    }
+
+    .table-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .table-card-header .card-title {
+        font-size: 14px; font-weight: 600; color: #111827;
+    }
+
+    .table-card-header a {
+        font-size: 12px; color: #3b82f6; text-decoration: none;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    table th {
+        font-size: 11.5px; font-weight: 600;
+        color: #6b7280; text-transform: uppercase;
+        letter-spacing: 0.05em;
+        text-align: left; padding: 8px 12px;
+        background: #f9fafb; border-bottom: 1px solid #e5e7eb;
+    }
+
+    table th:first-child { border-radius: 8px 0 0 0; }
+    table th:last-child  { border-radius: 0 8px 0 0; }
+
+    table td {
+        padding: 11px 12px;
+        font-size: 13px; color: #374151;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    table tr:last-child td { border-bottom: none; }
+
+    .status-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px; font-weight: 500;
+    }
+
+    .status-badge.active   { background: #d1fae5; color: #065f46; }
+    .status-badge.inactive { background: #fee2e2; color: #991b1b; }
+
+    /* ── Quick stats side card ── */
+    .quick-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 20px;
+        border: 1px solid #f0f0f0;
+    }
+
+    .quick-card .card-title {
+        font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 16px;
+    }
+
+    .quick-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .quick-item:last-child { border-bottom: none; }
+
+    .quick-item .q-label {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 13px; color: #374151;
+    }
+
+    .quick-item .q-dot {
+        width: 10px; height: 10px; border-radius: 50%;
+    }
+
+    .quick-item .q-value {
+        font-size: 13px; font-weight: 600; color: #111827;
+    }
+
+    /* Progress bar */
+    .progress-wrap { margin-top: 4px; }
+    .progress-label {
+        display: flex; justify-content: space-between;
+        font-size: 12px; color: #6b7280; margin-bottom: 4px;
+    }
+    .progress-bar {
+        height: 6px; border-radius: 99px;
+        background: #f3f4f6; overflow: hidden;
+    }
+    .progress-fill {
+        height: 100%; border-radius: 99px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1100px) {
+        .stat-grid { grid-template-columns: repeat(2, 1fr); }
+        .charts-row, .bottom-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+        .sidebar { width: 64px; }
+        .sidebar .school-name, .sidebar .school-sub,
+        .sidebar nav ul li a span,
+        .nav-section-label, .sidebar-header .user-badge .info,
+        .sidebar-footer a span { display: none; }
+        .sidebar-header .user-badge { justify-content: center; }
+        .main { margin-left: 64px; }
+        .stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+</style>
+</head>
+<body>
+
+<!-- ══ Sidebar ══ -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <div class="school-logo">
+            <!-- <div class="icon"><i class="fas fa-graduation-cap"></i></div> -->
+            <!-- <div>
+                <div class="school-name">School Management</div>
+                <div class="school-sub">Admin Portal</div>
+            </div> -->
+        </div>
+        <div class="user-badge">
+            <div class="avatar">{{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}</div>
+            <div class="info">
+                <div class="name">{{ request.user.get_full_name }}</div>
+                <div class="role">The Director</div>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <ul>
+            <li class="nav-section-label">Main</li>
+            <li><a href="#" class="active"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
+            <li><a href="#"><i class="fas fa-user-graduate"></i> <span>Students</span></a></li>
+            <li><a href="#"><i class="fas fa-chalkboard-teacher"></i> <span>Teachers</span></a></li>
+            <li><a href="#"><i class="fas fa-book-open"></i> <span>Classes</span></a></li>
+
+            <li class="nav-section-label">Academic</li>
+            <li><a href="#"><i class="fas fa-calendar-check"></i> <span>Attendance</span></a></li>
+            <li><a href="#"><i class="fas fa-clipboard-list"></i> <span>Exams &amp; Results</span></a></li>
+            <li><a href="#"><i class="fas fa-clock"></i> <span>Timetable</span></a></li>
+
+            <li class="nav-section-label">Administration</li>
+            <li><a href="#"><i class="fas fa-dollar-sign"></i> <span>Fees &amp; Payments</span></a></li>
+            <li><a href="#"><i class="fas fa-comment-dots"></i> <span>Communication</span></a></li>
+            <li><a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+        </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="{% url 'logout' %}">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Sign Out</span>
+        </a>
+    </div>
+</aside>
+
+<!-- ══ Main ══ -->
+<div class="main">
+
+    <!-- Top bar -->
+    <header class="topbar">
+        <div class="search-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search students, teachers, classes...">
+        </div>
+        <div class="topbar-right">
+            <!-- <button class="notif-btn">
+                <i class="fas fa-bell"></i>
+                <span class="badge">3</span>
+            </button> -->
+            <div class="topbar-user">
+                <div class="avatar">{{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}</div>
+                <div class="info">
+                    <div class="name">{{ request.user.get_full_name }}</div>
+                    <div class="role">The Director</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page body -->
+    <div class="page-body">
+
+        <div class="page-title">Dashboard</div>
+        <div class="page-subtitle">Welcome back, Director! Here's what's happening today.</div>
+
+        <!-- Stat cards -->
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="left">
+                    <div class="label">Total Students</div>
+                    <div class="value">{{ total_students|default:"1,247" }}</div>
+                    <div class="sub">+12 this month</div>
+                </div>
+                <div class="icon-wrap icon-blue"><i class="fas fa-user-graduate"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="left">
+                    <div class="label">Teachers</div>
+                    <div class="value">{{ total_teachers|default:"84" }}</div>
+                    <div class="sub">+3 this term</div>
+                </div>
+                <div class="icon-wrap icon-green"><i class="fas fa-chalkboard-teacher"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="left">
+                    <div class="label">Active Classes</div>
+                    <div class="value">{{ total_classes|default:"36" }}</div>
+                    <div class="sub neutral">All streams active</div>
+                </div>
+                <div class="icon-wrap icon-indigo"><i class="fas fa-book-open"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="left">
+                    <div class="label">Fees Collected</div>
+                    <div class="value">{{ fees_collected|default:"UGX 4.2M" }}</div>
+                    <div class="sub warn">78% of target</div>
+                </div>
+                <div class="icon-wrap icon-orange"><i class="fas fa-dollar-sign"></i></div>
+            </div>
+        </div>
+
+        <!-- Charts row -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <div class="card-title">Weekly Attendance</div>
+                <div class="chart-wrap" style="height:220px;">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="card-title">Grade Distribution</div>
+                <div class="chart-wrap" style="height:220px; display:flex; align-items:center; justify-content:center;">
+                    <canvas id="gradeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom row -->
+        <div class="bottom-row">
+            <!-- Students table -->
+            <div class="table-card">
+                <div class="table-card-header">
+                    <div class="card-title">Recent Students</div>
+                    <a href="#">View all</a>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>ID</th>
+                            <th>Class</th>
+                            <th>Gender</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.first_name }} {{ student.last_name }}</td>
+                            <td>{{ student.student_id }}</td>
+                            <td>{{ student.class_name }}</td>
+                            <td>{{ student.gender }}</td>
+                            <td><span class="status-badge {{ student.status }}">{{ student.status }}</span></td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" style="text-align:center; color:#9ca3af; padding:24px;">No students added yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Quick stats -->
+            <div class="quick-card">
+                <div class="card-title">Quick Overview</div>
+
+                <div class="quick-item">
+                    <div class="q-label"><span class="q-dot" style="background:#3b82f6;"></span> Male Students</div>
+                    <div class="q-value">{{ male_students|default:"672" }}</div>
+                </div>
+                <div class="quick-item">
+                    <div class="q-label"><span class="q-dot" style="background:#ec4899;"></span> Female Students</div>
+                    <div class="q-value">{{ female_students|default:"575" }}</div>
+                </div>
+                <div class="quick-item">
+                    <div class="q-label"><span class="q-dot" style="background:#10b981;"></span> Active Teachers</div>
+                    <div class="q-value">{{ active_teachers|default:"79" }}</div>
+                </div>
+                <div class="quick-item">
+                    <div class="q-label"><span class="q-dot" style="background:#f59e0b;"></span> Pending Fees</div>
+                    <div class="q-value">{{ pending_fees|default:"312" }}</div>
+                </div>
+                <div class="quick-item">
+                    <div class="q-label"><span class="q-dot" style="background:#6366f1;"></span> Today's Attendance</div>
+                    <div class="q-value">{{ todays_attendance|default:"94%" }}</div>
+                </div>
+
+                <div style="margin-top:20px;">
+                    <div class="card-title" style="margin-bottom:12px;">Fee Collection Progress</div>
+
+                    <div class="progress-wrap">
+                        <div class="progress-label"><span>Term 1</span><span>88%</span></div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:88%; background:#3b82f6;"></div></div>
+                    </div>
+                    <div class="progress-wrap" style="margin-top:10px;">
+                        <div class="progress-label"><span>Term 2</span><span>72%</span></div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:72%; background:#10b981;"></div></div>
+                    </div>
+                    <div class="progress-wrap" style="margin-top:10px;">
+                        <div class="progress-label"><span>Term 3</span><span>45%</span></div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:45%; background:#f59e0b;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /page-body -->
+</div><!-- /main -->
+
+<script>
+    // Weekly Attendance Bar Chart
+    const attCtx = document.getElementById('attendanceChart').getContext('2d');
+    new Chart(attCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+            datasets: [
+                {
+                    label: 'Present',
+                    data: [92, 88, 95, 87, 84],
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 6,
+                    barPercentage: 0.55,
+                },
+                {
+                    label: 'Absent',
+                    data: [8, 12, 5, 13, 16],
+                    backgroundColor: '#fca5a5',
+                    borderRadius: 6,
+                    barPercentage: 0.55,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'top', labels: { font: { family: 'Poppins', size: 12 }, boxWidth: 10, padding: 12 } } },
+            scales: {
+                x: { grid: { display: false }, ticks: { font: { family: 'Poppins', size: 12 } } },
+                y: {
+                    beginAtZero: true, max: 110,
+                    grid: { color: '#f3f4f6' },
+                    ticks: { font: { family: 'Poppins', size: 12 }, callback: v => v + '%' }
+                }
+            }
+        }
+    });
+
+    // Grade Distribution Donut
+    const gradeCtx = document.getElementById('gradeChart').getContext('2d');
+    new Chart(gradeCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['A (Excellent)', 'B (Good)', 'C (Average)', 'D (Below Avg)', 'E (Fail)'],
+            datasets: [{
+                data: [28, 35, 20, 12, 5],
+                backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#f97316', '#ef4444'],
+                borderWidth: 2,
+                borderColor: '#fff',
+                hoverOffset: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { font: { family: 'Poppins', size: 11 }, boxWidth: 10, padding: 8 }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

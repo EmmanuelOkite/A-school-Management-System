@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | School Management</title>
+<style>
+    /* Reset & base */
+    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
+    html, body { height: 100%; }
+
+    /* Background image with overlay */
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        position: relative;
+        padding: 20px;
+    }
+
+    body::before {
+        content: '';
+        position: absolute;
+        top:0; left:0;
+        width:100%;
+        height:100%;
+        background: url('{% static "images/solo.png" %}') no-repeat center center;
+        background-size: cover;
+        filter: brightness(0.5);
+        z-index: 0;
+    }
+
+    /* Form container */
+    .login-container {
+        position: relative;
+        z-index: 1;
+        background: #d0cdcd;
+        padding: 25px 30px;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+        0% {opacity:0; transform: translateY(-20px);}
+        100% {opacity:1; transform: translateY(0);}
+    }
+
+    /* Header */
+    .login-container h2 {
+        text-align: center;
+        color: #232c47;
+        margin-bottom: 25px;
+        font-size: 24px;
+    }
+
+    /* Form */
+    form label {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 500;
+        color: #374151;
+        font-size: 14px;
+    }
+
+    form input {
+        width: 100%;
+        padding: 8px 10px;
+        margin-bottom: 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+    form input:focus {
+        border-color: #1D4ED8;
+        box-shadow: 0 0 5px rgba(29,78,216,0.3);
+        outline: none;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background-color: #1D4ED8;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    button:hover { background-color: #2563EB; }
+
+    .errorlist { color:#DC2626; margin-bottom:12px; font-size:12px; }
+    .messages p { padding:8px 12px; border-radius:6px; margin-bottom:12px; font-size:13px; }
+    .messages p.success { background-color:#D1FAE5; color:#065F46; }
+    .messages p.error { background-color:#FEE2E2; color:#991B1B; }
+
+    /* Responsive */
+    @media (max-width: 450px) {
+        .login-container { padding:20px; }
+        h2 { font-size:22px; }
+        form input, button { font-size:14px; padding:10px; }
+    }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Login</h2>
+
+    {% for message in messages %}
+        <p class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</p>
+    {% endfor %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Email</label>
+        <input type="email" name="email" placeholder="Enter your email" required>
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter your password" required>
+
+        <button type="submit">Login</button>
+    </form>
+    <p style="text-align:center; margin-top:10px; font-size:14px;">
+        Don't have an account? <a href="{% url 'register' %}" style="color:#1D4ED8;">Register</a>
+    </p>
+</div>
+
+</body>
+</html>

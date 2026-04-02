@@ -1,0 +1,207 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register | School Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+    /* ── Reset ──────────────────────────────────────────── */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* ── Full-page layout ───────────────────────────────── */
+    html, body {
+        height: 100%;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 24px;
+        position: relative;
+    }
+
+    /* ── Background image with dark overlay ─────────────── */
+    body::before {
+        content: '';
+        position: fixed;          /* fixed so it covers the whole screen always */
+        inset: 0;
+        background: url('{% static "images/solo.png" %}') no-repeat center center / cover;
+        filter: brightness(0.45);
+        z-index: 0;
+    }
+
+    /* ── Card container ─────────────────────────────────── */
+    .register-container {
+        position: relative;
+        z-index: 1;
+        background: #d6d4d4;
+        width: 100%;
+        max-width: 420px;
+        padding: 36px 36px 40px;  /* extra bottom so button never clips */
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        max-height: calc(100vh - 48px); /* leave 24px gap top & bottom */
+        overflow-y: auto;              /* scroll if viewport is short */
+        animation: fadeIn 0.7s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-18px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Heading ────────────────────────────────────────── */
+    .register-container h2 {
+        text-align: center;
+        color: #1e2a4a;
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 24px;
+    }
+
+    /* ── Labels ─────────────────────────────────────────── */
+    form label {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    /* ── Inputs & Select (shared styles) ────────────────── */
+    form input,
+    form select {
+        width: 100%;
+        padding: 9px 12px;
+        margin-bottom: 14px;
+        border: 1px solid #c9cdd4;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: 'Poppins', sans-serif;
+        background: #ffffff;
+        color: #1f2937;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    form input:focus,
+    form select:focus {
+        border-color: #1D4ED8;
+        box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
+        outline: none;
+    }
+
+    form select {
+        cursor: pointer;
+        appearance: auto;
+    }
+
+    /* ── Submit button ──────────────────────────────────── */
+    button[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin-top: 8px;
+        background-color: #1D4ED8;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.25s ease, transform 0.15s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #1e40af;
+        transform: translateY(-1px);
+    }
+
+    button[type="submit"]:active {
+        transform: translateY(0);
+    }
+
+    /* ── Error & message styles ─────────────────────────── */
+    .errorlist {
+        list-style: none;
+        color: #DC2626;
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    .messages p {
+        padding: 8px 12px;
+        border-radius: 6px;
+        margin-bottom: 14px;
+        font-size: 13px;
+    }
+
+    .messages p.success { background: #D1FAE5; color: #065F46; }
+    .messages p.error   { background: #FEE2E2; color: #991B1B; }
+
+    /* ── Responsive (small phones) ──────────────────────── */
+    @media (max-width: 440px) {
+        .register-container {
+            padding: 24px 20px 28px;
+        }
+
+        .register-container h2 {
+            font-size: 20px;
+        }
+    }
+
+</style>
+</head>
+<body>
+
+<div class="register-container">
+    <h2>Create Account</h2>
+
+    {% for message in messages %}
+        <p class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</p>
+    {% endfor %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <label>First Name</label>
+        {{ form.first_name }}
+
+        <label>Last Name</label>
+        {{ form.last_name }}
+
+        <label>Email</label>
+        {{ form.email }}
+        {{ form.email.errors }}
+
+        <label>Register As</label>
+        <select name="role" required>
+            <option value="">Select Role</option>
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+            <option value="director">Director</option>
+        </select>
+
+        <label>Password</label>
+        {{ form.password }}
+
+        <label>Confirm Password</label>
+        {{ form.confirm_password }}
+
+        <button type="submit">Register</button>
+    </form>
+</div>
+
+</body>
+</html>
