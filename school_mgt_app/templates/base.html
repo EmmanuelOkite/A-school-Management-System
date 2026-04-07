@@ -1,0 +1,301 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{% block title %}Dashboard{% endblock %}</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:#f5f7fb;
+    display:flex;
+    color:#1f2937;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+    width:240px;
+    height:100vh;
+    background:#0f172a;
+    position:fixed;
+    display:flex;
+    flex-direction:column;
+}
+
+.sidebar-header{
+    padding:20px;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.logo-icon{
+    width:36px;height:36px;
+    background:#3b82f6;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+}
+
+.logo-text{
+    font-size:14px;
+    font-weight:600;
+    color:#fff;
+}
+
+.user-box{
+    display:flex;
+    gap:10px;
+    background:rgba(255,255,255,0.05);
+    padding:10px;
+    border-radius:10px;
+}
+
+.avatar{
+    width:34px;height:34px;
+    border-radius:50%;
+    background:#3b82f6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:13px;
+    font-weight:600;
+}
+
+.user-info .name{
+    font-size:13px;
+    color:#fff;
+    font-weight:600;
+}
+.user-info .role{
+    font-size:11px;
+    color:#9ca3af;
+}
+
+/* NAV */
+.sidebar nav{
+    padding:10px 0;
+    flex:1;
+    overflow-y:auto;
+}
+
+.nav-title{
+    font-size:10px;
+    color:#6b7280;
+    padding:10px 20px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+}
+
+.sidebar a{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 20px;
+    color:#9ca3af;
+    font-size:13.5px;
+    text-decoration:none;
+    transition:.2s;
+}
+
+.sidebar a:hover{
+    color:#fff;
+    background:rgba(255,255,255,0.05);
+}
+
+.sidebar a.active{
+    background:rgba(59,130,246,.15);
+    color:#60a5fa;
+    border-left:3px solid #3b82f6;
+}
+
+/* FOOTER */
+.sidebar-footer{
+    padding:15px 20px;
+    border-top:1px solid rgba(255,255,255,0.05);
+}
+
+/* ===== MAIN ===== */
+.main{
+    margin-left:240px;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+}
+
+/* TOPBAR */
+.topbar{
+    height:65px;
+    background:#fff;
+    border-bottom:1px solid #e5e7eb;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 25px;
+}
+
+.search{
+    position:relative;
+    width:300px;
+}
+
+.search input{
+    width:100%;
+    padding:9px 12px 9px 35px;
+    border-radius:8px;
+    border:1px solid #e5e7eb;
+    background:#f9fafb;
+}
+
+.search i{
+    position:absolute;
+    left:10px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#9ca3af;
+}
+
+.top-right{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+/* CONTENT AREA */
+.page-content{
+    padding:25px;
+    flex:1;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    .sidebar{width:70px}
+    .sidebar span{display:none}
+    .main{margin-left:70px}
+}
+</style>
+
+<!-- Page-specific CSS goes here, outside the main <style> block -->
+{% block extra_css %}{% endblock %}
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+    <div class="sidebar-header">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-school"></i></div>
+            <div class="logo-text">School System</div>
+        </div>
+
+        <div class="user-box">
+            <div class="avatar">
+                {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
+            </div>
+            <div class="user-info">
+                <div class="name">{{ request.user.get_full_name }}</div>
+                <div class="role">Head Master</div>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-title">Main</div>
+
+        <!-- READY: has view -->
+        <a href="{% url 'director_dashboard' %}" class="{% if request.path == '/director_dashboard/' %}active{% endif %}">
+            <i class="fas fa-th-large"></i><span>Dashboard</span>
+        </a>
+
+        <!-- READY: has view -->
+        <a href="{% url 'director_students' %}" class="{% if '/director/students' in request.path %}active{% endif %}">
+            <i class="fas fa-user-graduate"></i><span>Students</span>
+        </a>
+
+        <!-- TODO: add director_teachers url + view -->
+        <a href="#">
+            <i class="fas fa-chalkboard-teacher"></i><span>Teachers</span>
+        </a>
+
+        <!-- TODO: add director_classes url + view -->
+        <a href="#">
+            <i class="fas fa-chalkboard"></i><span>Classes</span>
+        </a>
+
+        <div class="nav-title">Academic</div>
+
+        <!-- TODO: add attendance url + view -->
+        <a href="#">
+            <i class="fas fa-calendar-check"></i><span>Attendance</span>
+        </a>
+
+        <!-- TODO: add exams url + view -->
+        <a href="#">
+            <i class="fas fa-clipboard-list"></i><span>Exams and Results</span>
+        </a>
+
+        <!-- TODO: add timetable url + view -->
+        <a href="#">
+            <i class="fas fa-clock"></i><span>Time Table</span>
+        </a>
+
+        <div class="nav-title">Admin</div>
+
+        <!-- TODO: add fees url + view -->
+        <a href="#">
+            <i class="fas fa-dollar-sign"></i><span>Fees</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="{% url 'logout' %}">
+            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+        </a>
+    </div>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="search">
+            <i class="fas fa-search"></i>
+            <input placeholder="Search...">
+        </div>
+
+        <div class="top-right">
+            <div class="avatar">{{ request.user.first_name|slice:":1" }}</div>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="page-content">
+        {% block content %}{% endblock %}
+    </div>
+
+</div>
+
+</body>
+</html>

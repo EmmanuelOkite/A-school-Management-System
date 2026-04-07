@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import RegisterForm
+from .forms import RegisterForm, StudentForm
 from django.contrib.auth import authenticate, login, logout
 from .models import User, Student, Teacher, Class, Fee
 from django.contrib.auth.decorators import login_required
@@ -110,6 +110,23 @@ def director_dashboard(request):
         'grade_data':   json.dumps(grade_data,   cls=DjangoJSONEncoder),
     }
     return render(request, 'school_mgt_app/director_dashboard.html', context)
+
+
+def students_view(request):
+    students = Student.objects.all().order_by('-id')
+
+    form = StudentForm()
+
+    if request.method == 'POST':
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('students')
+
+    return render(request, 'students.html', {
+        'students': students,
+        'form': form
+    })
 
 
 # Dashboard views

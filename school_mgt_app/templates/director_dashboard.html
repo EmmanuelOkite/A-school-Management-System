@@ -367,13 +367,17 @@ h1{
 
         <!-- STATS -->
         <div class="stats">
-            <div class="card">
-                <div>
-                    <h3>Total Students</h3>
-                    <h2>{{ total_students }}</h2>
-                </div>
-                <div class="icon blue"><i class="fas fa-user-graduate"></i></div>
-            </div>
+            <a href="{% url 'director_students' %}">
+    <div class="card">
+        <div>
+            <h3>Total Students</h3>
+            <h2>{{ total_students }}</h2>
+        </div>
+        <div class="icon blue">
+            <i class="fas fa-user-graduate"></i>
+        </div>
+    </div>
+</a>
 
             <div class="card">
                 <div>
