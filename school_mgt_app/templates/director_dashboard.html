@@ -1,195 +1,14 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Director Dashboard</title>
+{% block title %}Dashboard{% endblock %}
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% block extra_css %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 
 <style>
 
-/* ===== BASE ===== */
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-    font-family:'Poppins',sans-serif;
-    background:#f5f7fb;
-    display:flex;
-    color:#1f2937;
-}
-
-/* ===== SIDEBAR ===== */
-.sidebar{
-    width:250px;
-    height:100vh;
-    background:#0f172a;
-    position:fixed;
-    display:flex;
-    flex-direction:column;
-}
-
-/* HEADER */
-.sidebar-header{
-    padding:20px;
-    border-bottom:1px solid rgba(255,255,255,0.06);
-}
-
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:15px;
-}
-
-.logo-icon{
-    width:38px;height:38px;
-    background:#3b82f6;
-    border-radius:10px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#fff;
-}
-
-.logo-text{
-    font-size:14px;
-    font-weight:600;
-    color:#fff;
-}
-
-.user-box{
-    display:flex;
-    gap:10px;
-    background:rgba(255,255,255,0.05);
-    padding:10px;
-    border-radius:10px;
-}
-
-.avatar{
-    width:34px;height:34px;
-    border-radius:50%;
-    background:#3b82f6;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#fff;
-    font-size:13px;
-    font-weight:600;
-}
-
-.user-info .name{
-    font-size:13px;
-    color:#fff;
-    font-weight:600;
-}
-.user-info .role{
-    font-size:11px;
-    color:#9ca3af;
-}
-
-/* NAV */
-.sidebar nav{padding:10px 0;flex:1;overflow-y:auto}
-
-.nav-title{
-    font-size:10px;
-    color:#6b7280;
-    padding:10px 20px;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-}
-
-.sidebar a{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:11px 20px;
-    color:#9ca3af;
-    font-size:13.5px;
-    transition:.2s;
-}
-
-.sidebar a:hover{
-    color:#fff;
-    background:rgba(255,255,255,0.05);
-}
-
-.sidebar a.active{
-    background:rgba(59,130,246,.15);
-    color:#60a5fa;
-    border-left:3px solid #3b82f6;
-}
-
-/* FOOTER */
-.sidebar-footer{
-    padding:15px 20px;
-    border-top:1px solid rgba(255,255,255,0.05);
-}
-
-.sidebar-footer a{
-    color:#9ca3af;
-    display:flex;
-    gap:10px;
-}
-
-.sidebar-footer a:hover{color:#f87171}
-
-/* ===== MAIN ===== */
-.main{
-    margin-left:250px;
-    width:100%;
-}
-
-/* TOPBAR */
-.topbar{
-    height:65px;
-    background:#fff;
-    border-bottom:1px solid #e5e7eb;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 25px;
-}
-
-.search{
-    position:relative;
-    width:320px;
-}
-.search input{
-    width:100%;
-    padding:9px 12px 9px 35px;
-    border-radius:8px;
-    border:1px solid #e5e7eb;
-    background:#f9fafb;
-}
-.search i{
-    position:absolute;
-    left:10px;
-    top:50%;
-    transform:translateY(-50%);
-    color:#9ca3af;
-}
-
-.top-right{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
-
-.bell{
-    width:36px;height:36px;
-    border:1px solid #e5e7eb;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-/* ===== CONTENT ===== */
-.content{padding:25px}
+/* ===== DASHBOARD CONTENT ONLY ===== */
 
 h1{
     font-size:22px;
@@ -202,7 +21,7 @@ h1{
     margin-bottom:20px;
 }
 
-/* ===== STATS ===== */
+/* STATS */
 .stats{
     display:grid;
     grid-template-columns:repeat(4,1fr);
@@ -218,6 +37,8 @@ h1{
     justify-content:space-between;
     align-items:center;
     border:1px solid #f1f1f1;
+    text-decoration:none;
+    color:inherit;
 }
 
 .card h3{
@@ -242,7 +63,7 @@ h1{
 .green{background:#d1fae5;color:#10b981}
 .orange{background:#ffedd5;color:#f97316}
 
-/* ===== CHARTS ===== */
+/* CHARTS */
 .row{
     display:grid;
     grid-template-columns:2fr 1fr;
@@ -257,7 +78,7 @@ h1{
     border:1px solid #f1f1f1;
 }
 
-/* ===== TABLE ===== */
+/* TABLE */
 .table{
     width:100%;
     border-collapse:collapse;
@@ -281,94 +102,30 @@ h1{
     font-size:11px;
 }
 
-.active{background:#d1fae5;color:#065f46}
+.badge.active{
+    background:#d1fae5;
+    color:#065f46;
+}
 
-/* ===== RESPONSIVE ===== */
+/* RESPONSIVE */
 @media(max-width:1100px){
     .stats{grid-template-columns:repeat(2,1fr)}
     .row{grid-template-columns:1fr}
 }
 
 </style>
-</head>
+{% endblock %}
 
-<body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
+{% block content %}
 
-    <div class="sidebar-header">
-        <!-- <div class="logo">
-            <div class="logo-icon"><i class="fas fa-school"></i></div>
-            <div class="logo-text">School System</div>
-        </div> -->
+<h1>Dashboard</h1>
+<div class="subtitle">Welcome back! Here's what's happening today.</div>
 
-        <div class="user-box">
-            <div class="avatar">
-                {{ request.user.first_name|slice:":1" }}{{ request.user.last_name|slice:":1" }}
-            </div>
-            <div class="user-info">
-                <div class="name">{{ request.user.get_full_name }}</div>
-                <div class="role">Head Master</div>
-            </div>
-        </div>
-    </div>
+<!-- STATS -->
+<div class="stats">
 
-    <nav>
-        <!-- MAIN -->
-        <div class="nav-title">Main</div>
-        <a class="active"><i class="fas fa-th-large"></i>Dashboard</a>
-        <a><i class="fas fa-user-graduate"></i>Students</a>
-        <a><i class="fas fa-chalkboard-teacher"></i>Teachers</a>
-        <a><i class="fas fa-book-open"></i>Classes</a>
-
-        <!-- ACADEMIC -->
-        <div class="nav-title">Academic</div>
-        <a><i class="fas fa-calendar-check"></i>Attendance</a>
-        <a><i class="fas fa-clipboard-list"></i>Exams & Results</a>
-        <a><i class="fas fa-clock"></i>Timetable</a>
-
-        <!-- ADMIN -->
-        <div class="nav-title">Administration</div>
-        <a><i class="fas fa-dollar-sign"></i>Fees & Payments</a>
-        <a><i class="fas fa-comments"></i>Communication</a>
-        <a><i class="fas fa-cog"></i>Settings</a>
-    </nav>
-
-    <div class="sidebar-footer">
-        <a href="{% url 'logout' %}">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </a>
-    </div>
-
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-    <!-- TOPBAR -->
-    <div class="topbar">
-        <div class="search">
-            <i class="fas fa-search"></i>
-            <input placeholder="Search students, teachers, classes...">
-        </div>
-
-        <div class="top-right">
-            <!-- <div class="bell"><i class="fas fa-bell"></i></div> -->
-            <div class="avatar">{{ request.user.first_name|slice:":1" }}</div>
-        </div>
-    </div>
-
-    <!-- CONTENT -->
-    <div class="content">
-
-        <h1>Dashboard</h1>
-        <div class="subtitle">Welcome back! Here's what's happening today.</div>
-
-        <!-- STATS -->
-        <div class="stats">
-            <a href="{% url 'director_students' %}">
-    <div class="card">
+    <a href="{% url 'director_students' %}" class="card">
         <div>
             <h3>Total Students</h3>
             <h2>{{ total_students }}</h2>
@@ -376,67 +133,77 @@ h1{
         <div class="icon blue">
             <i class="fas fa-user-graduate"></i>
         </div>
+    </a>
+
+    <div class="card">
+        <div>
+            <h3>Teachers</h3>
+            <h2>{{ total_teachers }}</h2>
+        </div>
+        <div class="icon green">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </div>
     </div>
-</a>
 
-            <div class="card">
-                <div>
-                    <h3>Teachers</h3>
-                    <h2>{{ total_teachers }}</h2>
-                </div>
-                <div class="icon green"><i class="fas fa-chalkboard-teacher"></i></div>
-            </div>
-
-            <div class="card">
-                <div>
-                    <h3>Classes</h3>
-                    <h2>{{ total_classes }}</h2>
-                </div>
-                <div class="icon blue"><i class="fas fa-book"></i></div>
-            </div>
-
-            <div class="card">
-                <div>
-                    <h3>Fees</h3>
-                    <h2>{{ fees_collected }}</h2>
-                </div>
-                <div class="icon orange"><i class="fas fa-dollar-sign"></i></div>
-            </div>
+    <div class="card">
+        <div>
+            <h3>Classes</h3>
+            <h2>{{ total_classes }}</h2>
         </div>
-
-        <!-- CHARTS -->
-        <div class="row">
-            <div class="box"><canvas id="attendanceChart"></canvas></div>
-            <div class="box"><canvas id="gradeChart"></canvas></div>
+        <div class="icon blue">
+            <i class="fas fa-book"></i>
         </div>
+    </div>
 
-        <!-- TABLE -->
-        <div class="box">
-            <h3 style="margin-bottom:10px;">Recent Students</h3>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>ID</th>
-                        <th>Class</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for student in students %}
-                    <tr>
-                        <td>{{ student.first_name }} {{ student.last_name }}</td>
-                        <td>{{ student.student_id }}</td>
-                        <td>{{ student.class_name }}</td>
-                        <td><span class="badge active">{{ student.status }}</span></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div class="card">
+        <div>
+            <h3>Fees</h3>
+            <h2>{{ fees_collected }}</h2>
         </div>
+        <div class="icon orange">
+            <i class="fas fa-dollar-sign"></i>
+        </div>
+    </div>
 
+</div>
+
+<!-- CHARTS -->
+<div class="row">
+    <div class="box">
+        <canvas id="attendanceChart"></canvas>
+    </div>
+    <div class="box">
+        <canvas id="gradeChart"></canvas>
     </div>
 </div>
 
-</body>
-</html>
+<!-- TABLE -->
+<div class="box">
+    <h3 style="margin-bottom:10px;">Recent Students</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Class</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.first_name }} {{ student.last_name }}</td>
+                <td>{{ student.student_id }}</td>
+                <td>{{ student.class_name }}</td>
+                <td>
+                    <span class="badge active">{{ student.status }}</span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
