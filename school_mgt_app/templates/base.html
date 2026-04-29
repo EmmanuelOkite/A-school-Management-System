@@ -233,9 +233,10 @@ body{
         </a>
 
         <!-- TODO: add director_teachers url + view -->
-        <a href="#">
-            <i class="fas fa-chalkboard-teacher"></i><span>Teachers</span>
-        </a>
+        <a href="{% url 'director_teachers' %}"
+   class="{% if '/director/teachers' in request.path %}active{% endif %}">
+    <i class="fas fa-chalkboard-teacher"></i><span>Teachers</span>
+</a>
 
         <!-- TODO: add director_classes url + view -->
         <a href="#">

@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render
+from .models import Teacher
 # Create your views here.
 
 # Registration view
@@ -128,6 +129,25 @@ def students_view(request):
         'form': form
     })
 
+def teachers_view(request):
+    teachers = Teacher.objects.all().order_by('-id')
+
+    context = {
+        'teachers': teachers
+    }
+
+    return render(request, 'teachers.html', context)
+
+
+def director_teachers_view(request):
+    # Fetch all teacher records from the database
+    teachers = Teacher.objects.all()
+    
+    context = {
+        'teachers': teachers,
+    }
+    return render(request, 'director_teachers.html', context)
+
 
 # Dashboard views
 def student_dashboard(request):
@@ -138,3 +158,5 @@ def teacher_dashboard(request):
 
 def director_dashboard(request):
     return render(request, 'director_dashboard.html')
+
+

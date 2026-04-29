@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Teachers{% endblock %}
+
+{% block extra_css %}
+<style>
+
+/* PAGE HEADER */
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.page-title{
+    font-size:26px;
+    font-weight:700;
+}
+
+.page-subtitle{
+    font-size:14px;
+    color:#6b7280;
+    margin-top:5px;
+}
+
+/* BUTTON */
+.add-btn{
+    background:#2563eb;
+    color:#fff;
+    padding:12px 20px;
+    border-radius:10px;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+/* SEARCH */
+.teacher-search{
+    margin:20px 0;
+    position:relative;
+    max-width:400px;
+}
+
+.teacher-search input{
+    width:100%;
+    padding:12px 15px 12px 40px;
+    border-radius:10px;
+    border:1px solid #e5e7eb;
+}
+
+.teacher-search i{
+    position:absolute;
+    left:12px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#9ca3af;
+}
+
+/* GRID */
+.teacher-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+/* CARD */
+.teacher-card{
+    background:#fff;
+    padding:20px;
+    border-radius:16px;
+    border:1px solid #eee;
+    display:flex;
+    gap:15px;
+    align-items:flex-start;
+}
+
+/* AVATAR */
+.teacher-avatar{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#3b82f6,#4f46e5);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-weight:700;
+    font-size:18px;
+}
+
+/* INFO */
+.teacher-info h3{
+    font-size:16px;
+    font-weight:600;
+}
+
+.teacher-info p{
+    font-size:13px;
+    color:#6b7280;
+}
+
+/* CLASS TAGS */
+.class-tags{
+    margin:6px 0;
+}
+
+.class-tag{
+    display:inline-block;
+    background:#f3f4f6;
+    padding:4px 10px;
+    border-radius:8px;
+    font-size:12px;
+    margin-right:5px;
+}
+
+/* STATUS */
+.status{
+    font-size:12px;
+    padding:4px 10px;
+    border-radius:20px;
+}
+
+.status.active{
+    background:#d1fae5;
+    color:#065f46;
+}
+
+.status.on_leave{
+    background:#e5e7eb;
+    color:#374151;
+}
+
+/* FOOT */
+.teacher-footer{
+    margin-top:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+}
+
+.teacher-phone{
+    font-size:13px;
+    color:#6b7280;
+}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+    .teacher-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:600px){
+    .teacher-grid{grid-template-columns:1fr}
+}
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<!-- HEADER -->
+<div class="page-header">
+    <div>
+        <div class="page-title">Teachers</div>
+        <div class="page-subtitle">Manage teacher profiles and assignments</div>
+    </div>
+
+    <a href="#" class="add-btn">
+        <i class="fas fa-plus"></i> Add Teacher
+    </a>
+</div>
+
+<!-- SEARCH -->
+<div class="teacher-search">
+    <i class="fas fa-search"></i>
+    <input type="text" placeholder="Search teachers..." id="teacherSearch">
+</div>
+
+<!-- GRID -->
+<div class="teacher-grid" id="teacherGrid">
+
+    {% for teacher in teachers %}
+    <div class="teacher-card">
+
+        <!-- Avatar -->
+        <div class="teacher-avatar">
+            {{ teacher.first_name|slice:":1" }}{{ teacher.last_name|slice:":1" }}
+        </div>
+
+        <!-- Info -->
+        <div style="flex:1;">
+            <div class="teacher-info">
+                <h3>{{ teacher.first_name }} {{ teacher.last_name }}</h3>
+                <p>{{ teacher.subject }}</p>
+            </div>
+
+            <!-- Classes -->
+            <div class="class-tags">
+                {% for cls in teacher.classes.split(',') %}
+                    <span class="class-tag">{{ cls }}</span>
+                {% endfor %}
+            </div>
+
+            <!-- Footer -->
+            <div class="teacher-footer">
+                <span class="teacher-phone">{{ teacher.phone }}</span>
+
+                <span class="status {{ teacher.status }}">
+                    {{ teacher.status|title }}
+                </span>
+            </div>
+        </div>
+
+    </div>
+    {% empty %}
+        <p>No teachers found.</p>
+    {% endfor %}
+
+</div>
+
+<!-- SEARCH SCRIPT -->
+<script>
+document.getElementById('teacherSearch')?.addEventListener('input', function(){
+    const q = this.value.toLowerCase();
+
+    document.querySelectorAll('.teacher-card').forEach(card=>{
+        card.style.display = card.innerText.toLowerCase().includes(q) ? '' : 'none';
+    });
+});
+</script>
+
+{% endblock %}
