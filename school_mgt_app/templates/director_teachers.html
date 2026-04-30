@@ -1,25 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container-fluid p-4">
+<div class="container-fluid p-4" style="background-color: #f8f9fa; min-height: 100vh;">
     <!-- Header Section -->
-    <div class="d-flex justify-content-between align-items-center mb-1">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold mb-0">Teachers</h2>
-            <p class="text-muted">Manage teacher profiles and assignments</p>
+            <h2 class="fw-bold mb-0" style="color: #111827; letter-spacing: -0.5px;">Teachers</h2>
+            <p class="text-muted mb-0">Manage teacher profiles and assignments</p>
         </div>
-        <a href="#" class="btn btn-primary px-4">
+        <a href="#" class="btn btn-primary px-4 py-2 fw-bold" style="border-radius: 8px; padding: 0.5rem 1rem; margin-left: 80%; background-color: #2563eb; border: none;">
             <i class="fas fa-plus me-2"></i>Add Teacher
         </a>
     </div>
 
     <!-- Search Bar -->
     <div class="row mb-4">
-        <div class="col-md-4">
+        <div class="col-md-5 col-lg-4">
             <form method="GET" action="">
-                <div class="input-group bg-white border rounded">
-                    <span class="input-group-text bg-transparent border-0"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" name="q" class="form-control border-0" placeholder="Search teachers..." value="{{ request.GET.q }}">
+                <div class="input-group bg-white shadow-sm rounded-3 overflow-hidden border">
+                    <span class="input-group-text bg-transparent border-0 ps-3">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" name="q" class="form-control border-0 py-2 ps-2" placeholder="Search teachers..." value="{{ request.GET.q }}" style="box-shadow: none;">
                 </div>
             </form>
         </div>
@@ -28,29 +30,31 @@
     <!-- Teacher Grid -->
     <div class="row g-4">
         {% for teacher in teachers %}
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm p-3 h-100">
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm p-4 h-100 teacher-card">
                 <div class="d-flex align-items-start">
-                    <!-- Initials Avatar -->
-                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 60px; height: 60px; min-width: 60px; font-size: 1.2rem;">
+                    <!-- Avatar with Gradient to match image -->
+                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3 avatar-box">
                         {{ teacher.get_initials }}
                     </div>
                     
                     <div class="flex-grow-1">
-                        <h5 class="mb-0 fw-bold">{{ teacher.user.get_full_name }}</h5>
-                        <p class="text-muted mb-2 small">{{ teacher.subject }}</p>
+                        <h5 class="mb-1 fw-bold text-dark">{{ teacher.user.get_full_name }}</h5>
+                        <p class="text-muted mb-3 small">{{ teacher.subject }}</p>
                         
-                        <!-- Forms/Classes Tags -->
-                        <div class="mb-3">
+                        <!-- Assigned Classes Tags -->
+                        <div class="mb-4 d-flex flex-wrap gap-2">
                             {% for form in teacher.assigned_forms.all %}
-                            <span class="badge bg-light text-dark border me-1 small px-2">{{ form.name }}</span>
+                            <span class="badge-custom">{{ form.name }}</span>
+                            {% empty %}
+                            <span class="text-muted smaller italic">Unassigned</span>
                             {% endfor %}
                         </div>
 
-                        <!-- Phone and Status -->
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                            <span class="text-muted small">{{ teacher.phone }}</span>
-                            <span class="badge {% if teacher.status == 'active' %}bg-success-subtle text-success{% else %}bg-secondary-subtle text-secondary{% endif %} rounded-pill px-3">
+                        <!-- Phone and Status Row -->
+                        <div class="d-flex justify-content-between align-items-center pt-2 mt-auto">
+                            <span class="text-secondary small fw-medium">{{ teacher.phone }}</span>
+                            <span class="status-pill {% if teacher.status == 'active' %}status-active{% else %}status-leave{% endif %}">
                                 {{ teacher.status }}
                             </span>
                         </div>
@@ -60,17 +64,73 @@
         </div>
         {% empty %}
         <div class="col-12 text-center py-5">
-            <p class="text-muted">No teachers found.</p>
+            <div class="p-5 bg-white rounded-3 shadow-sm border">
+                <i class="fas fa-user-friends fa-3x text-light mb-3"></i>
+                <p class="text-muted fs-5">No teachers found....</p>
+            </div>
         </div>
         {% endfor %}
     </div>
 </div>
 
 <style>
-    /* Styling to match the specific "subtle" look in your image */
-    .bg-success-subtle { background-color: #e8f7ef !important; color: #28a745 !important; }
-    .bg-secondary-subtle { background-color: #f0f2f5 !important; color: #6c757d !important; }
-    .card { transition: transform 0.2s; border-radius: 12px; }
-    .card:hover { transform: translateY(-5px); }
+    /* Professional Color Palette & Typography */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    body { font-family: 'Inter', sans-serif; }
+
+    /* Card Styling */
+    .teacher-card {
+        transition: all 0.25s ease;
+        border-radius: 16px !important;
+        background: #ffffff;
+    }
+    
+    .teacher-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px -8px rgba(0,0,0,0.1) !important;
+    }
+
+    /* Avatar Box */
+    .avatar-box {
+        width: 64px; 
+        height: 64px; 
+        min-width: 64px; 
+        font-size: 1.25rem;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+    }
+
+    /* Custom Badges (Forms) */
+    .badge-custom {
+        background-color: #f3f4f6;
+        color: #374151;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+    }
+
+    /* Status Pills */
+    .status-pill {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 14px;
+        border-radius: 20px;
+        text-transform: lowercase;
+    }
+
+    .status-active {
+        background-color: #ecfdf5 !important;
+        color: #10b981 !important;
+    }
+
+    .status-leave {
+        background-color: #f3f4f6 !important;
+        color: #6b7280 !important;
+    }
+
+    .smaller { font-size: 11px; }
 </style>
 {% endblock %}
