@@ -140,9 +140,17 @@ def teachers_view(request):
 
 
 def director_teachers_view(request):
-    # Fetch all teacher records from the database
-    teachers = Teacher.objects.all()
-    
+    query = request.GET.get('q')
+    if query:
+        # Search by name or subject
+        teachers = Teacher.objects.filter(
+            models.Q(user__first_name__icontains=query) | 
+            models.Q(user__last_name__icontains=query) |
+            models.Q(subject__icontains=query)
+        )
+    else:
+        teachers = Teacher.objects.all()
+
     context = {
         'teachers': teachers,
     }
