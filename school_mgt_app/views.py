@@ -8,6 +8,7 @@ import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render
 from .models import Teacher
+from django.db import models
 # Create your views here.
 
 # Registration view
