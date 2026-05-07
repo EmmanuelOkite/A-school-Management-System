@@ -99,3 +99,26 @@ class Fee(models.Model):
 
     def __str__(self):
         return f"{self.student} - {self.amount} - {self.status}"
+    
+
+class Form(models.Model):
+    name = models.CharField(max_length=20) # e.g., "Form 1A"
+    class_teacher = models.ForeignKey('Teacher', on_delete=models.SET_NULL, null=True, related_name="managed_class")
+    capacity = models.IntegerField(default=45)
+    
+    # In a real app, you'd calculate these from other models, 
+    # but for now, we'll store them or use properties.
+    attendance_percentage = models.IntegerField(default=90) 
+
+    def student_count(self):
+        # This assumes your Student model has a ForeignKey to Form
+        # If your Student model uses 'class_name' as a CharField, we'll filter by string
+        from .models import Student
+        return Student.objects.filter(class_name=self.name).count()
+
+    def subject_count(self):
+        # Placeholder: You can link this to a 'Subject' model later
+        return 8 
+
+    def __str__(self):
+        return self.name
