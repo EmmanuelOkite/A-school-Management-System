@@ -9,6 +9,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render
 from .models import Teacher
 from django.db import models
+from .models import Form
 # Create your views here.
 
 # Registration view
@@ -156,6 +157,14 @@ def director_teachers_view(request):
         'teachers': teachers,
     }
     return render(request, 'director_teachers.html', context)
+
+def director_classes_view(request):
+    forms = Form.objects.all().select_related('class_teacher__user')
+    
+    context = {
+        'forms': forms,
+    }
+    return render(request, 'director_classes.html', context)
 
 
 # Dashboard views
