@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import RegisterForm, StudentForm
 from django.contrib.auth import authenticate, login, logout
-from .models import User, Student, Teacher, Class, Fee
+from .models import User, Student, Teacher, Form, Fee
 from django.contrib.auth.decorators import login_required
 import json
 from django.core.serializers.json import DjangoJSONEncoder
@@ -74,7 +74,7 @@ def director_dashboard(request):
     # ── Stat card counts ──────────────────────────────────────────
     total_students  = students.count()
     total_teachers  = Teacher.objects.count()
-    total_classes   = Class.objects.count()
+    total_classes   = Form.objects.count()
     pending_fees    = Fee.objects.filter(status='pending').count()
     male_students   = students.filter(gender='Male').count()
     female_students = students.filter(gender='Female').count()
@@ -159,12 +159,9 @@ def director_teachers_view(request):
     return render(request, 'director_teachers.html', context)
 
 def director_classes_view(request):
+    # Fetch all forms and the class teacher's user info
     forms = Form.objects.all().select_related('class_teacher__user')
-    
-    context = {
-        'forms': forms,
-    }
-    return render(request, 'director_classes.html', context)
+    return render(request, 'director_classes.html', {'forms': forms})
 
 
 # Dashboard views

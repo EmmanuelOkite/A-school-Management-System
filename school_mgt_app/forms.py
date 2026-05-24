@@ -1,6 +1,6 @@
 from django import forms
 from .models import User
-from .models import Student, Teacher, Class, Fee
+from .models import Student, Teacher, Form, Fee
 
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -67,7 +67,7 @@ class TeacherForm(forms.ModelForm):
 
 class ClassForm(forms.ModelForm):
     class Meta:
-        model = Class
+        model = Form
         fields = '__all__'
 
 class FeeForm(forms.ModelForm):
